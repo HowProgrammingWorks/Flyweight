@@ -1,9 +1,10 @@
 'use strict';
 
 class Timer {
-  constructor(interval) {
+  constructor(interval, removeTimer) {
     this.interval = interval;
     this.listeners = new Set();
+    this.removeTimer = removeTimer;
     this.instance = setInterval(() => {
       for (const callback of this.listeners.values()) {
         callback();
@@ -14,14 +15,26 @@ class Timer {
   listen(callback) {
     this.listeners.add(callback);
   }
+
+  remove(callback) {
+    this.listeners.delete(callback);
+    if (this.listeners.length === 0) {
+      clearInterval(this.instance);
+      this.removeTimer(callback);
+    }
+  }
 }
 
 class TimerFactory {
   static timers = new Map();
+
   static getTimer(interval) {
-    const timer = TimerFactory.timers.get(interval);
+    const removeTimer = (callback) => {
+      TimerFactory.timers.delete(callback);
+    };
+    const timer = TimerFactory.timers.get(interval, removeTimer);
     if (timer) return timer;
-    const instance = new Timer(interval);
+    const instance = new Timer(interval, removeTimer);
     TimerFactory.timers.set(interval, instance);
     return instance;
   }
@@ -29,8 +42,13 @@ class TimerFactory {
 
 class Interval {
   constructor(msec, callback) {
+    this.callback = callback;
     this.timer = TimerFactory.getTimer(msec);
     this.timer.listen(callback);
+  }
+
+  stop() {
+    this.timer.remove(this.callback);
   }
 }
 
@@ -38,7 +56,6 @@ class Interval {
 
 class Client {
   constructor(msec, count) {
-    this.timers = [];
     for (let i = 0; i < count; i++) {
       new Interval(msec, () => {});
     }

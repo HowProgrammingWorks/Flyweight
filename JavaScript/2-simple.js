@@ -17,21 +17,22 @@ class Interval {
     }
     timer.listeners.add(callback);
   }
-}
 
-// Usage
-
-class Client {
-  constructor(msec, count) {
-    this.timers = [];
-    for (let i = 0; i < count; i++) {
-      new Interval(msec, () => {}, msec);
+  remove(callback) {
+    this.listeners.delete(callback);
+    if (this.listeners.length === 0) {
+      clearInterval(this.instance);
+      Interval.timers.delete(this);
     }
   }
 }
 
-const client1 = new Client(1000, 1000000);
-const client2 = new Client(2000, 1000000);
-console.log({ client1, client2 });
+// Usage
+
+const COUNT = 1000000;
+for (let i = 0; i < COUNT; i++) {
+  new Interval(1000, () => {});
+  new Interval(2000, () => {});
+}
 const memory = process.memoryUsage();
 console.log({ memory });
