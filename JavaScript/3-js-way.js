@@ -1,5 +1,8 @@
 'use strict';
 
+// Note: this implementation is good for JavaScript culture
+// but it is not Flyweight (GoF Patterns) implementation
+
 const timers = new Map();
 
 const free = ({ listeners, instance }) => (callback) => {
