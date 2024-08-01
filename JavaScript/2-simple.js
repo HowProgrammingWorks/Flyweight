@@ -20,7 +20,7 @@ class Interval {
 
   remove(callback) {
     this.listeners.delete(callback);
-    if (this.listeners.length === 0) {
+    if (this.listeners.size === 0) {
       clearInterval(this.instance);
       Interval.timers.delete(this);
     }

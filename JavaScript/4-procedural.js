@@ -7,7 +7,7 @@ const timers = new Map();
 
 const free = ({ listeners, instance }) => (callback) => {
   listeners.delete(callback);
-  if (listeners.length === 0) {
+  if (listeners.size === 0) {
     clearInterval(instance);
     timers.delete(this);
   }
