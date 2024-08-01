@@ -3,19 +3,20 @@
 class Interval {
   static timers = new Map();
 
-  constructor(msec, callback) {
+  constructor(interval, callback) {
     this.callback = callback;
-    const timer = Interval.timers.get(msec);
+    const timer = Interval.timers.get(interval);
     if (timer) {
       Object.setPrototypeOf(this, timer);
     } else {
+      this.interval = interval;
       this.listeners = new Set();
       this.instance = setInterval(() => {
         for (const callback of this.listeners.values()) {
           callback();
         }
-      }, msec);
-      Interval.timers.set(msec, this);
+      }, interval);
+      Interval.timers.set(interval, this);
     }
     this.listeners.add(this.callback);
   }
@@ -24,7 +25,7 @@ class Interval {
     this.listeners.delete(this.callback);
     if (this.listeners.size === 0) {
       clearInterval(this.instance);
-      Interval.timers.delete(this);
+      Interval.timers.delete(this.interval);
     }
   }
 }

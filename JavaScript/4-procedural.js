@@ -5,23 +5,23 @@
 
 const timers = new Map();
 
-const free = ({ listeners, instance }) => (callback) => {
+const free = ({ listeners, instance, interval }) => (callback) => {
   listeners.delete(callback);
   if (listeners.size === 0) {
     clearInterval(instance);
-    timers.delete(this);
+    timers.delete(interval);
   }
 };
 
-const interval = (msec, callback) => {
-  let timer = timers.get(msec);
+const interval = (interval, callback) => {
+  let timer = timers.get(interval);
   if (timer) return timer;
   const listeners = new Set();
   const instance = setInterval(() => {
     timer.listeners.forEach((callback) => callback());
-  }, msec);
-  timer = { listeners, instance };
-  timers.set(msec, timer);
+  }, interval);
+  timer = { listeners, instance, interval };
+  timers.set(interval, timer);
   listeners.add(callback);
   return Object.assign(timer, { remove: free(timer) });
 };

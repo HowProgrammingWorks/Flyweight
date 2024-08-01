@@ -3,16 +3,17 @@
 class Interval {
   static timers = new Map();
 
-  constructor(msec, callback) {
-    let timer = Interval.timers.get(msec);
+  constructor(interval, callback) {
+    let timer = Interval.timers.get(interval);
     if (!timer) {
+      this.interval = interval;
       this.listeners = new Set();
       this.instance = setInterval(() => {
         for (const callback of this.listeners.values()) {
           callback();
         }
-      }, msec);
-      Interval.timers.set(msec, this);
+      }, interval);
+      Interval.timers.set(interval, this);
       timer = this;
     }
     timer.listeners.add(callback);
@@ -22,7 +23,7 @@ class Interval {
     this.listeners.delete(callback);
     if (this.listeners.size === 0) {
       clearInterval(this.instance);
-      Interval.timers.delete(this);
+      Interval.timers.delete(this.interval);
     }
   }
 }

@@ -20,7 +20,7 @@ class Timer {
     this.listeners.delete(callback);
     if (this.listeners.size === 0) {
       clearInterval(this.instance);
-      this.removeTimer(callback);
+      this.removeTimer();
     }
   }
 }
@@ -29,8 +29,8 @@ class TimerFactory {
   static timers = new Map();
 
   static getTimer(interval) {
-    const removeTimer = (callback) => {
-      TimerFactory.timers.delete(callback);
+    const removeTimer = () => {
+      TimerFactory.timers.delete(interval);
     };
     const timer = TimerFactory.timers.get(interval);
     if (timer) return timer;
@@ -41,9 +41,9 @@ class TimerFactory {
 }
 
 class Interval {
-  constructor(msec, callback) {
+  constructor(interval, callback) {
     this.callback = callback;
-    this.timer = TimerFactory.getTimer(msec);
+    this.timer = TimerFactory.getTimer(interval);
     this.timer.listen(callback);
   }
 
@@ -55,9 +55,9 @@ class Interval {
 // Usage
 
 class Client {
-  constructor(msec, count) {
+  constructor(interval, count) {
     for (let i = 0; i < count; i++) {
-      new Interval(msec, () => {});
+      new Interval(interval, () => {});
     }
   }
 }
