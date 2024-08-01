@@ -32,7 +32,7 @@ class TimerFactory {
     const removeTimer = (callback) => {
       TimerFactory.timers.delete(callback);
     };
-    const timer = TimerFactory.timers.get(interval, removeTimer);
+    const timer = TimerFactory.timers.get(interval);
     if (timer) return timer;
     const instance = new Timer(interval, removeTimer);
     TimerFactory.timers.set(interval, instance);
