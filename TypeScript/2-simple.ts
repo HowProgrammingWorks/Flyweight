@@ -1,5 +1,5 @@
 class Interval {
-  static timers: Map<number, Interval>;
+  static timers: Map<number, Interval> = new Map();
   interval: number;
   listeners: Set<Function>;
   instance: number;
