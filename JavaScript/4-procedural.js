@@ -5,13 +5,15 @@
 
 const timers = new Map();
 
-const free = ({ listeners, instance, interval }) => (callback) => {
-  listeners.delete(callback);
-  if (listeners.size === 0) {
-    clearInterval(instance);
-    timers.delete(interval);
-  }
-};
+const free =
+  ({ listeners, instance, interval }) =>
+  (callback) => {
+    listeners.delete(callback);
+    if (listeners.size === 0) {
+      clearInterval(instance);
+      timers.delete(interval);
+    }
+  };
 
 const interval = (interval, callback) => {
   let timer = timers.get(interval);
